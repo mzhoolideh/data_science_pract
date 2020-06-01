@@ -1,4 +1,4 @@
-def continue_crawl(search_history, target_url):
+def continue_crawl(search_history, target_url, max_steps=25):
     '''
     This is to find lists of urls leading to target_url
 
@@ -9,8 +9,8 @@ def continue_crawl(search_history, target_url):
         print('Target found!')
         return False
 
-    elif len(search_history) > 25:
-        print('Target not found after 25 trial')
+    elif len(search_history) > max_steps:
+        print('Target not found after %f trial', %len(max_steps))
         return False
 
     elif search_history[-1] in search_history[:-1]:
