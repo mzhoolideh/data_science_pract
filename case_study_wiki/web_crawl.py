@@ -1,35 +1,13 @@
-def continue_crawl(search_history, target_url, max_steps=25):
-    '''
-    This is to find lists of urls leading to target_url
-
-    search_history: list of searches
-    target_url: target
-    '''
-    if search_history[-1] == target_url:
-        print('Target found!')
-        return False
-
-    elif len(search_history) > max_steps:
-        print('Target not found after %f trial', %len(max_steps))
-        return False
-
-    elif search_history[-1] in search_history[:-1]:
-        print('You are stocked in a loop')
-        return False
-
-    else:
-        True
-
 import time
+import urllib
 
-while continue_crawl(article_chain, target_url): 
-    # download html of last article in article_chain
-    # find the first link in that html
-    first_link = find_first_link(article_chain[-1])
-    # add the first link to article chain
-    article_chain.append(first_link)
-    # delay for about two seconds
-    time.sleep(2)
+import bs4
+import requests
+
+
+start_url = "https://en.wikipedia.org/wiki/Special:Random"
+target_url = "https://en.wikipedia.org/wiki/Philosophy"
+
 
 
 def find_first_link(url):
@@ -63,6 +41,43 @@ def find_first_link(url):
     first_link = urllib.parse.urljoin('https://en.wikipedia.org/', article_link)
 
     return first_link
+
+
+def continue_crawl(search_history, target_url, max_steps=25):
+    '''
+    This is to find lists of urls leading to target_url
+
+    search_history: list of searches
+    target_url: target
+    '''
+    if search_history[-1] == target_url:
+        print('Target found!')
+        return False
+    elif len(search_history) > max_steps:
+        print('Target not found after %d trial', max_steps)
+        return False
+    elif search_history[-1] in search_history[:-1]:
+        print('You are stocked in a loop')
+        return False
+    else:
+        return True
+
+
+article_chain = [start_url]
+
+while continue_crawl(article_chain, target_url): 
+    print(article_chain[-1])
+    # download html of last article in article_chain
+    # find the first link in that html
+    first_link = find_first_link(article_chain[-1])
+    if not first_link:
+        print("We've arrived at an article with no links, aborting search!")
+        break
+    # add the first link to article chain
+    article_chain.append(first_link)
+    # delay for about two seconds
+    time.sleep(2)
+
 
 
 
